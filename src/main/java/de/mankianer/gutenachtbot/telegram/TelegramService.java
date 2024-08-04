@@ -21,75 +21,40 @@ import java.util.function.Supplier;
 
 @Log4j2
 @Component
-public class TelegramService extends TelegramLongPollingBot {
+public class TelegramService {
 
-    private final TelegramUserRepo telegramUserRepo;
-    @Getter
-    @Value("${telegram.bot.username}")
-    private String botUsername;
-    @Getter
-    @Value("${telegram.bot.token}")
-    private String botToken;
-    @Value("${telegram.bot.admin}")
-    private String adminUsername;
+    private final TelegramBot telegramBot;
+    private final TelegramUserComponent telegramUserComponent;
 
-
-
-    public TelegramService(TelegramUserRepo telegramUserRepo) {
-        this.telegramUserRepo = telegramUserRepo;
+    public TelegramService(TelegramUserRepo telegramUserRepo, TelegramBot telegramBot, TelegramUserComponent telegramUserComponent) {
+        this.telegramBot = telegramBot;
+        this.telegramUserComponent = telegramUserComponent;
+        this.telegramBot.setTelegramService(this);
+        this.telegramUserComponent.setTelegramService(this);
+        this.telegramUserComponent.setTelegramBot(telegramBot);
     }
 
     @PostConstruct
     public void init() {
-       log.info("TelegramService started");
-        if(telegramUserRepo.findByUsername(adminUsername).isEmpty()) {
-            TelegramUser user = new TelegramUser();
-            user.setUsername(adminUsername);
-            user.setState(TelegramUser.State.ADMIN);
-            telegramUserRepo.save(user);
-            log.warn("Create default admin user in Database: {}", user);
-        }
+        log.info("TelegramService started");
         try {
             TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
-            telegramBotsApi.registerBot(this);
+            telegramBotsApi.registerBot(telegramBot);
         } catch (TelegramApiException e) {
             log.error("Error while registering bot");
             throw new RuntimeException(e);
         }
     }
 
-    @Override
-    public void onUpdateReceived(Update update) {
-        log.info("Update received: {}", update.getMessage().getChat().getUserName());
-        Optional<TelegramUser> foundUser = telegramUserRepo.findByChatId(update.getMessage().getChat().getId());
-        TelegramUser telegramUser = foundUser.orElseGet(() -> {
-            TelegramUser user = new TelegramUser();
-            user.setUsername(update.getMessage().getChat().getUserName());
-            user.setChatId(update.getMessage().getChatId());
-            return user;
-        });
-        log.info("User: {}", telegramUser);
-
-        foundUser.ifPresentOrElse(user -> {
-            sendMessage("Hello " + user.getUsername(), user);
-        }, () -> {
-            sendMessage("Hello new user " + telegramUser.getUsername(), telegramUser);
-            telegramUserRepo.findByUsername(telegramUser.getUsername()).forEach(user -> {
-                telegramUser.setState(TelegramUser.State.ADMIN);
-                telegramUserRepo.save(telegramUser);
-                sendMessage("You are Admin!", telegramUser);
-            });
-        });
-
+    public void sendMessage(String message, TelegramUser user) {
+        sendMessage(SendMessage.builder().chatId(String.valueOf(user.getChatId())).text(message).build());
     }
 
-
-    public void sendMessage(String message, TelegramUser user) {
+    public void sendMessage(SendMessage message) {
         try {
-            execute(SendMessage.builder().chatId(String.valueOf(user.getChatId())).text(message).build());
+            telegramBot.execute(message);
         } catch (TelegramApiException e) {
             log.error("Error while sending message", e);
         }
     }
-
 }

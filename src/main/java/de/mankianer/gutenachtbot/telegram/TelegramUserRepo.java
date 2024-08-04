@@ -12,4 +12,6 @@ import java.util.Optional;
 public interface TelegramUserRepo extends JpaRepository<TelegramUser, String> {
     List<TelegramUser> findByUsername(String username);
     Optional<TelegramUser> findByChatId(long chatId);
+    Optional<TelegramUser> findFirstByChatIdOrUsername(long chatId, String username);
+    List<TelegramUser> findByStateAndChatIdNotNull(TelegramUser.State state);
 }

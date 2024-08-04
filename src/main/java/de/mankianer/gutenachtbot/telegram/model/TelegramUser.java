@@ -16,12 +16,17 @@ public class TelegramUser {
     private long id;
 
     private String username;
+    private String firstname;
     @NonNull
     private State state = State.UNVERIFIED;
     private Long chatId;
 
     public boolean isAdmin() {
         return state == State.ADMIN;
+    }
+
+    public boolean isUnverified() {
+        return state == State.UNVERIFIED;
     }
 
     public enum State {
