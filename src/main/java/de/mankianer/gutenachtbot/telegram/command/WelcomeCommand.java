@@ -1,4 +1,4 @@
-package de.mankianer.gutenachtbot.telegram.command.admin;
+package de.mankianer.gutenachtbot.telegram.command;
 
 import de.mankianer.gutenachtbot.telegram.CommandInterface;
 import de.mankianer.gutenachtbot.telegram.TelegramService;
