@@ -1,23 +1,17 @@
 package de.mankianer.gutenachtbot.telegram;
 
+import de.mankianer.gutenachtbot.telegram.component.TelegramAdminComponent;
+import de.mankianer.gutenachtbot.telegram.component.TelegramBot;
+import de.mankianer.gutenachtbot.telegram.component.TelegramCommandComponend;
+import de.mankianer.gutenachtbot.telegram.component.TelegramUserComponent;
 import de.mankianer.gutenachtbot.telegram.model.TelegramUser;
 import jakarta.annotation.PostConstruct;
-import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
-
-import java.util.Optional;
-import java.util.function.Supplier;
 
 @Log4j2
 @Component
@@ -25,13 +19,18 @@ public class TelegramService {
 
     private final TelegramBot telegramBot;
     private final TelegramUserComponent telegramUserComponent;
+    private final TelegramAdminComponent telegramAdminComponent;
+    private final TelegramCommandComponend telegramCommandComponend;
 
-    public TelegramService(TelegramUserRepo telegramUserRepo, TelegramBot telegramBot, TelegramUserComponent telegramUserComponent) {
+
+    public TelegramService(TelegramBot telegramBot, TelegramUserComponent telegramUserComponent, TelegramAdminComponent telegramAdminComponent, TelegramCommandComponend telegramCommandComponend) {
         this.telegramBot = telegramBot;
-        this.telegramUserComponent = telegramUserComponent;
+        this.telegramCommandComponend = telegramCommandComponend;
         this.telegramBot.setTelegramService(this);
+        this.telegramUserComponent = telegramUserComponent;
         this.telegramUserComponent.setTelegramService(this);
-        this.telegramUserComponent.setTelegramBot(telegramBot);
+        this.telegramAdminComponent = telegramAdminComponent;
+        this.telegramAdminComponent.setTelegramService(this);
     }
 
     @PostConstruct
@@ -56,5 +55,9 @@ public class TelegramService {
         } catch (TelegramApiException e) {
             log.error("Error while sending message", e);
         }
+    }
+
+    public void registerCommand(CommandInterface command) {
+        telegramCommandComponend.registerCommand(command);
     }
 }

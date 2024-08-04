@@ -1,6 +1,8 @@
-package de.mankianer.gutenachtbot.telegram;
+package de.mankianer.gutenachtbot.telegram.component;
 
+import de.mankianer.gutenachtbot.telegram.TelegramService;
 import de.mankianer.gutenachtbot.telegram.model.TelegramUser;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -9,14 +11,12 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import java.util.Optional;
-
 @Log4j2
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
 
-    private final TelegramUserRepo telegramUserRepo;
     private final TelegramUserComponent telegramUserComponent;
+    private final TelegramCommandComponend telegramCommandComponend;
     @Setter
     private TelegramService telegramService;
 
@@ -28,9 +28,9 @@ public class TelegramBot extends TelegramLongPollingBot {
     private String botToken;
 
 
-    public TelegramBot(TelegramUserRepo telegramUserRepo, TelegramUserComponent telegramUserComponent) {
-        this.telegramUserRepo = telegramUserRepo;
+    public TelegramBot(TelegramUserComponent telegramUserComponent, TelegramCommandComponend telegramCommandComponend) {
         this.telegramUserComponent = telegramUserComponent;
+        this.telegramCommandComponend = telegramCommandComponend;
     }
 
     @Override
@@ -40,7 +40,8 @@ public class TelegramBot extends TelegramLongPollingBot {
         if (user.isUnverified()) {
             telegramUserComponent.handleNewUser(user);
         } else {
-            telegramService.sendMessage("Welcome back", user);
+            telegramCommandComponend.getCommand(update.getMessage().getText(), user)
+                    .ifPresent(command -> command.onExecute(update, user));
         }
 
     }
