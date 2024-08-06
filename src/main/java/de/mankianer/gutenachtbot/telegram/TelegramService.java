@@ -18,8 +18,6 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 public class TelegramService {
 
     private final TelegramBot telegramBot;
-    private final TelegramUserComponent telegramUserComponent;
-    private final TelegramAdminComponent telegramAdminComponent;
     private final TelegramCommandComponend telegramCommandComponend;
 
 
@@ -27,28 +25,30 @@ public class TelegramService {
         this.telegramBot = telegramBot;
         this.telegramCommandComponend = telegramCommandComponend;
         this.telegramBot.setTelegramService(this);
-        this.telegramUserComponent = telegramUserComponent;
-        this.telegramUserComponent.setTelegramService(this);
-        this.telegramAdminComponent = telegramAdminComponent;
-        this.telegramAdminComponent.setTelegramService(this);
+        telegramUserComponent.setTelegramService(this);
+        telegramAdminComponent.setTelegramService(this);
     }
 
     @PostConstruct
     public void init() {
         log.info("TelegramService started");
-        try {
-            TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
-            telegramBotsApi.registerBot(telegramBot);
-        } catch (TelegramApiException e) {
-            log.error("Error while registering bot");
-            throw new RuntimeException(e);
-        }
+        telegramBot.registerBot();
     }
 
+    /**
+     * Sends a message to the user
+     * convert the message and user to a SendMessage object
+     * @param message
+     * @param user
+     */
     public void sendMessage(String message, TelegramUser user) {
         sendMessage(SendMessage.builder().chatId(String.valueOf(user.getChatId())).text(message).build());
     }
 
+    /**
+     * Executes the given message via TelegramBot
+     * @param message
+     */
     public void sendMessage(SendMessage message) {
         try {
             telegramBot.execute(message);
@@ -57,6 +57,10 @@ public class TelegramService {
         }
     }
 
+    /**
+     * Registers a command for all TelegramUsers
+     * @param command
+     */
     public void registerCommand(CommandInterface command) {
         telegramCommandComponend.registerCommand(command);
     }

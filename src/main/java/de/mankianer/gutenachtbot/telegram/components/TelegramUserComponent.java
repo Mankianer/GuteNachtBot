@@ -34,7 +34,7 @@ public class TelegramUserComponent {
      * @param update
      * @return
      */
-    TelegramUser getUserByUpdate(Update update) {
+    public TelegramUser getUserByUpdate(Update update) {
         long chatId = update.getMessage().getChat().getId();
         String username = update.getMessage().getChat().getUserName();
         Optional<TelegramUser> foundUser = telegramUserRepo.findFirstByChatIdOrUsername(chatId, username);
