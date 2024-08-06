@@ -62,6 +62,7 @@ public class TelegramService {
      * @param command
      */
     public void registerCommand(CommandInterface command) {
+        log.info("Registering command: {}", command.getClass().getSimpleName());
         telegramCommandComponend.registerCommand(command);
     }
 }

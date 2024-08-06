@@ -33,11 +33,11 @@ public class TelegramCommandComponend {
      */
     public Optional<CommandInterface> getCommand(String message, TelegramUser user) {
         if (user.isAdmin()) {
-            Optional<CommandInterface> adminCommand = telegramAdminComponent.getAdminCommands().stream().filter(command -> command.matchesMessage(message)).findFirst();
+            Optional<CommandInterface> adminCommand = telegramAdminComponent.getAdminCommands().stream().filter(command -> command.matchesMessage(message, user)).findFirst();
             if (adminCommand.isPresent()) {
                 return adminCommand;
             }
         }
-        return commands.stream().filter(command -> command.matchesMessage(message)).findFirst();
+        return commands.stream().filter(command -> command.matchesMessage(message, user)).findFirst();
     }
 }

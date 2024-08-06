@@ -10,19 +10,14 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 @Component
 public class WelcomeCommand implements CommandInterface {
 
-    private final TelegramService telegramService;
+    private TelegramService telegramService;
 
     public WelcomeCommand(TelegramService telegramService) {
         this.telegramService = telegramService;
     }
 
-    @PostConstruct
-    public void init() {
-        telegramService.registerCommand(this);
-    }
-
     @Override
-    public boolean matchesMessage(String message) {
+    public boolean matchesMessage(String message, TelegramUser user) {
         return message.startsWith("/welcome");
     }
 

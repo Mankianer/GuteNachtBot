@@ -26,8 +26,8 @@ public class AdminAprove implements CommandInterface {
     }
 
     @Override
-    public boolean matchesMessage(String message) {
-        return message.startsWith(COMMAND_NAME + " ");
+    public boolean matchesMessage(String message, TelegramUser user) {
+        return user.isAdmin() && message.startsWith(COMMAND_NAME + " ");
     }
 
     @Override

@@ -10,7 +10,7 @@ public interface CommandInterface {
      * @param message
      * @return true if the message matches the command
      */
-    boolean matchesMessage(String message);
+    boolean matchesMessage(String message, TelegramUser user);
 
     void onExecute(Update update, TelegramUser user);
 }

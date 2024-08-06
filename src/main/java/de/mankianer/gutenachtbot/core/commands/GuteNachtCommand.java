@@ -12,23 +12,16 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 @Component
 public class GuteNachtCommand implements CommandInterface {
 
-    private final TelegramService telegramService;
     private final GuteNachtService guteNachtService;
     private final GuteNachtConfigRepo guteNachtConfigRepo;
 
-    public GuteNachtCommand(TelegramService telegramService, GuteNachtService guteNachtService, GuteNachtConfigRepo guteNachtConfigRepo) {
-        this.telegramService = telegramService;
+    public GuteNachtCommand(GuteNachtService guteNachtService, GuteNachtConfigRepo guteNachtConfigRepo) {
         this.guteNachtService = guteNachtService;
         this.guteNachtConfigRepo = guteNachtConfigRepo;
     }
 
-    @PostConstruct
-    public void init() {
-        telegramService.registerCommand(this);
-    }
-
     @Override
-    public boolean matchesMessage(String message) {
+    public boolean matchesMessage(String message, TelegramUser user) {
         return message.toLowerCase().startsWith("gute nacht");
     }
 
