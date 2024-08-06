@@ -26,18 +26,17 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
-@ExtendWith(SpringExtension.class)
 class TelegramServiceTest {
 
-    @MockBean
+    @Mock
     TelegramUserRepo telegramUserRepo;
-    @MockBean
+    @Mock
     TelegramBot telegramBot;
-    @MockBean
+    @Mock
     TelegramUserComponent telegramUserComponent;
-    @MockBean
+    @Mock
     TelegramAdminComponent telegramAdminComponent;
-    @MockBean
+    @Mock
     TelegramCommandComponend telegramCommandComponend;
 
     TelegramService telegramService;

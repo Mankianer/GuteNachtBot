@@ -6,6 +6,7 @@ import de.mankianer.gutenachtbot.telegram.models.TelegramUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -18,19 +19,18 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@ExtendWith(SpringExtension.class)
 class TelegramBotTest {
 
-    @MockBean
+    @Mock
     TelegramUserRepo telegramUserRepo;
     TelegramBot telegramBot;
-    @MockBean
+    @Mock
     TelegramUserComponent telegramUserComponent;
-    @MockBean
+    @Mock
     TelegramAdminComponent telegramAdminComponent;
-    @MockBean
+    @Mock
     TelegramCommandComponend telegramCommandComponend;
-    @MockBean
+    @Mock
     TelegramService telegramService;
 
     @BeforeEach
