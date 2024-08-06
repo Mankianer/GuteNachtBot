@@ -1,7 +1,7 @@
 package de.mankianer.gutenachtbot.core;
 
-import de.mankianer.gutenachtbot.core.model.GuteNachtConfig;
-import de.mankianer.gutenachtbot.telegram.model.TelegramUser;
+import de.mankianer.gutenachtbot.core.models.GuteNachtConfig;
+import de.mankianer.gutenachtbot.telegram.models.TelegramUser;
 import jakarta.annotation.PostConstruct;
 import lombok.Setter;
 import org.springframework.scheduling.TaskScheduler;
@@ -9,7 +9,6 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Component;
 
 import java.time.*;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ScheduledFuture;

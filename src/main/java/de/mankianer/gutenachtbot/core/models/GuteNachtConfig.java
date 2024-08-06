@@ -1,6 +1,6 @@
-package de.mankianer.gutenachtbot.core.model;
+package de.mankianer.gutenachtbot.core.models;
 
-import de.mankianer.gutenachtbot.telegram.model.TelegramUser;
+import de.mankianer.gutenachtbot.telegram.models.TelegramUser;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;

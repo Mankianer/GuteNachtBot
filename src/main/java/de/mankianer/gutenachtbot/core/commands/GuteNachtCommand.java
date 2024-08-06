@@ -1,11 +1,10 @@
-package de.mankianer.gutenachtbot.core.command;
+package de.mankianer.gutenachtbot.core.commands;
 
 import de.mankianer.gutenachtbot.core.GuteNachtConfigRepo;
 import de.mankianer.gutenachtbot.core.GuteNachtService;
-import de.mankianer.gutenachtbot.core.model.GuteNachtConfig;
 import de.mankianer.gutenachtbot.telegram.CommandInterface;
 import de.mankianer.gutenachtbot.telegram.TelegramService;
-import de.mankianer.gutenachtbot.telegram.model.TelegramUser;
+import de.mankianer.gutenachtbot.telegram.models.TelegramUser;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;

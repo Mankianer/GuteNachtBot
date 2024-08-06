@@ -1,4 +1,4 @@
-package de.mankianer.gutenachtbot.telegram.model;
+package de.mankianer.gutenachtbot.telegram.models;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

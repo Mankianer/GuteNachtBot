@@ -1,6 +1,6 @@
 package de.mankianer.gutenachtbot.telegram;
 
-import de.mankianer.gutenachtbot.telegram.model.TelegramUser;
+import de.mankianer.gutenachtbot.telegram.models.TelegramUser;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 public interface CommandInterface {

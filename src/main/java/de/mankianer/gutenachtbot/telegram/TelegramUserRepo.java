@@ -1,7 +1,6 @@
 package de.mankianer.gutenachtbot.telegram;
 
-import de.mankianer.gutenachtbot.telegram.model.TelegramUser;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
+import de.mankianer.gutenachtbot.telegram.models.TelegramUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

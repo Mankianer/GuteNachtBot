@@ -1,8 +1,7 @@
-package de.mankianer.gutenachtbot.telegram.component;
+package de.mankianer.gutenachtbot.telegram.components;
 
 import de.mankianer.gutenachtbot.telegram.TelegramService;
-import de.mankianer.gutenachtbot.telegram.model.TelegramUser;
-import lombok.AccessLevel;
+import de.mankianer.gutenachtbot.telegram.models.TelegramUser;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
