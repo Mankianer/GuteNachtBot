@@ -35,6 +35,7 @@ public class GuteNachtCommand implements CommandInterface {
 
     @Override
     public void onExecute(Update update, TelegramUser user) {
-        guteNachtService.sendGuteNacht(guteNachtConfigRepo.findByTelegramUser(user).orElse(new GuteNachtConfig(user)));
+        guteNachtService.sendGuteNacht(user);
+        guteNachtService.rescheduleGuteNacht(user);
     }
 }

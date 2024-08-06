@@ -3,12 +3,14 @@ package de.mankianer.gutenachtbot.core.model;
 import de.mankianer.gutenachtbot.telegram.model.TelegramUser;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Entity
 @Data
+@NoArgsConstructor
 public class GuteNachtConfig {
 
     @Id

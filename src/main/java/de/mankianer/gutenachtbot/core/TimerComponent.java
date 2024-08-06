@@ -1,7 +1,9 @@
 package de.mankianer.gutenachtbot.core;
 
 import de.mankianer.gutenachtbot.core.model.GuteNachtConfig;
+import de.mankianer.gutenachtbot.telegram.model.TelegramUser;
 import jakarta.annotation.PostConstruct;
+import lombok.Setter;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Component;
@@ -15,23 +17,46 @@ import java.util.concurrent.ScheduledFuture;
 @Component
 public class TimerComponent {
 
+    private final GuteNachtConfigRepo guteNachtConfigRepo;
     private TaskScheduler taskScheduler;
     private Map<Long, ScheduledFuture<?>> scheduledTaskMap;
+    @Setter
+    private GuteNachtService guteNachtService;
 
-    @PostConstruct
-    public void init() {
+    public TimerComponent(GuteNachtConfigRepo guteNachtConfigRepo) {
+        this.guteNachtConfigRepo = guteNachtConfigRepo;
         scheduledTaskMap = new HashMap<>();
         taskScheduler = new ThreadPoolTaskScheduler();
         ((ThreadPoolTaskScheduler) taskScheduler).initialize();
     }
 
-    public Instant scheduleGuteNacht(GuteNachtConfig guteNachtConfig, Runnable task) {
-        if (scheduledTaskMap.containsKey(guteNachtConfig.getId())) {
-            scheduledTaskMap.get(guteNachtConfig.getId()).cancel(false);
+    @PostConstruct
+    public void init() {
+        reScheduleAll();
+    }
+
+    private void reScheduleAll() {
+        guteNachtConfigRepo.findAll().forEach(guteNachtConfig -> {
+           scheduleGuteNacht(guteNachtConfig.getTelegramUser());
+        });
+    }
+
+    /**
+     * Schedules the Gute Nacht message for the user
+     * @param user
+     * @return the next instant the message will be sent
+     */
+    public Instant scheduleGuteNacht(TelegramUser user) {
+        if (scheduledTaskMap.containsKey(user.getId())) {
+            scheduledTaskMap.get(user.getId()).cancel(false);
         }
+        GuteNachtConfig guteNachtConfig = guteNachtService.getGuteNachtConfig(user);
         if(guteNachtConfig.getTimer() != null) {
             Instant nextInstant = getNextInstant(guteNachtConfig.getTimer().atDate(guteNachtConfig.getNextDate()));
-            scheduledTaskMap.put(guteNachtConfig.getId(),taskScheduler.schedule(task, nextInstant));
+            scheduledTaskMap.put(user.getId(),taskScheduler.schedule(() -> {
+                guteNachtService.sendGuteNacht(user);
+                scheduleGuteNacht(user);
+            }, nextInstant));
             return nextInstant;
         }
         return null;
