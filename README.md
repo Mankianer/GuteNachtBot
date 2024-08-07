@@ -10,7 +10,7 @@ _Ein TelegramBot, um eine personalisierte GuteNachtGeschichte zu erhalten._
 - [x] TelegramCommandStruktur aufbauen
 - [ ] Funktionalitäten via Tests absichern
 - [ ] Repository einstellen
-- [ ] release pipeline aufsetzen
+- [ ] ci pipeline aufsetzen
 
 ### V1 - Custom GuteNachtGeschichten Ausgabe via Text
 - [ ] GuteNachtGeschichte wird durch KI-API generiert
