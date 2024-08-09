@@ -8,9 +8,7 @@ _Ein TelegramBot, um eine personalisierte GuteNachtGeschichte zu erhalten._
 - [x] Timer für GuteNachtGeschichte (durch User einstellbar /timer <HH:mm>)
 - [x] Dummy GuteNachtGeschichte via Text
 - [x] TelegramCommandStruktur aufbauen
-- [ ] Funktionalitäten via Tests absichern
-- [ ] Repository einstellen
-- [ ] ci pipeline aufsetzen
+- [x] Repository einstellen
 
 ### V1 - Custom GuteNachtGeschichten Ausgabe via Text
 - [ ] GuteNachtGeschichte wird durch KI-API generiert
@@ -19,6 +17,8 @@ _Ein TelegramBot, um eine personalisierte GuteNachtGeschichte zu erhalten._
 - [ ] Es soll Prompt-Profile geben, die User auswählen können. 3 Default Profile
 - [ ] Admin kann Prompt-Profile erstellen
 - [ ] GutenNachtGeschichte wird aus vorgegebenen Inhalt + Prompt des Users generiert
+- [ ] ci pipeline aufsetzen
+- [ ] Funktionalitäten via Tests absichern
 - [ ] _optional: Sprachausgabe für Text_
  
 ### V2 - Gedächtnis + FeedBack-System + Gruppen-Inhalt
