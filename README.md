@@ -11,7 +11,7 @@ _Ein TelegramBot, um eine personalisierte GuteNachtGeschichte zu erhalten._
 - [x] Repository einstellen
 
 ### V1 - Custom GuteNachtGeschichten Ausgabe via Text
-- [ ] GuteNachtGeschichte wird durch KI-API generiert
+- [x] GuteNachtGeschichte wird durch KI-API generiert
 - [ ] User kann Prompt für GuteNachtGeschichte verwalten
 - [ ] Prompt soll nur eine Beschreibung für die Erzählform sein, dies soll versucht werden zu validieren
 - [ ] Es soll Prompt-Profile geben, die User auswählen können. 3 Default Profile

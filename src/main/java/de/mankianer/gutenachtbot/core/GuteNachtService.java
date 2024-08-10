@@ -1,6 +1,7 @@
 package de.mankianer.gutenachtbot.core;
 
 import de.mankianer.gutenachtbot.core.models.GuteNachtConfig;
+import de.mankianer.gutenachtbot.openai.OpenAIAPIService;
 import de.mankianer.gutenachtbot.telegram.TelegramService;
 import de.mankianer.gutenachtbot.telegram.models.TelegramUser;
 import jakarta.annotation.PostConstruct;
@@ -18,13 +19,15 @@ public class GuteNachtService {
     private final TelegramService telegramService;
     private final GuteNachtConfigRepo guteNachtConfigRepo;
     private final TimerComponent timerComponent;
+    private final OpenAIAPIService openAIAPIService;
 
 
-    public GuteNachtService(TelegramService telegramService, GuteNachtConfigRepo guteNachtConfigRepo, TimerComponent timerComponent) {
+    public GuteNachtService(TelegramService telegramService, GuteNachtConfigRepo guteNachtConfigRepo, TimerComponent timerComponent, OpenAIAPIService openAIAPIService) {
         this.telegramService = telegramService;
         this.guteNachtConfigRepo = guteNachtConfigRepo;
         this.timerComponent = timerComponent;
         this.timerComponent.setGuteNachtService(this);
+        this.openAIAPIService = openAIAPIService;
     }
 
     @PostConstruct
@@ -40,7 +43,11 @@ public class GuteNachtService {
      * @return the updated GuteNachtConfig for next Date
      */
     public GuteNachtConfig sendGuteNacht(TelegramUser user) {
-        telegramService.sendMessage("Gute Nacht %s 💤".formatted(user.getFirstname()), user); //TODO hier den magischen Gutenachtgruß einfügen
+        this.openAIAPIService.completeText("Gib mir eine kurze Gutenachtgeschichte").ifPresentOrElse(story -> {
+            telegramService.sendMessage(story, user);
+        }, () -> {
+            telegramService.sendMessage("Es konnte keine GuteNachtGeschichte erzeugt werden. 😢", user);
+        });
         GuteNachtConfig guteNachtConfig = getGuteNachtConfig(user);
         guteNachtConfig.setNextDate(LocalDate.now().plusDays(1));
         return guteNachtConfigRepo.save(guteNachtConfig);
