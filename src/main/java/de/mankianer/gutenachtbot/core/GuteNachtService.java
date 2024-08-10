@@ -1,7 +1,12 @@
 package de.mankianer.gutenachtbot.core;
 
+import de.mankianer.gutenachtbot.core.components.GuteNachtCustomizeComponent;
+import de.mankianer.gutenachtbot.core.components.GuteNachtInhaltComponent;
+import de.mankianer.gutenachtbot.core.components.TimerComponent;
+import de.mankianer.gutenachtbot.core.components.exceptions.UserNotAllowedException;
 import de.mankianer.gutenachtbot.core.models.GuteNachtConfig;
 import de.mankianer.gutenachtbot.core.models.GuteNachtInhalt;
+import de.mankianer.gutenachtbot.core.repos.GuteNachtConfigRepo;
 import de.mankianer.gutenachtbot.openai.OpenAIAPIService;
 import de.mankianer.gutenachtbot.telegram.TelegramService;
 import de.mankianer.gutenachtbot.telegram.models.TelegramUser;
@@ -23,13 +28,15 @@ public class GuteNachtService {
     private final TimerComponent timerComponent;
     private final OpenAIAPIService openAIAPIService;
     private final GuteNachtInhaltComponent guteNachtInhaltComponent;
+    private final GuteNachtCustomizeComponent guteNachtCustomizeComponent;
 
 
-    public GuteNachtService(TelegramService telegramService, GuteNachtConfigRepo guteNachtConfigRepo, TimerComponent timerComponent, OpenAIAPIService openAIAPIService, GuteNachtInhaltComponent guteNachtInhaltComponent) {
+    public GuteNachtService(TelegramService telegramService, GuteNachtConfigRepo guteNachtConfigRepo, TimerComponent timerComponent, OpenAIAPIService openAIAPIService, GuteNachtInhaltComponent guteNachtInhaltComponent, GuteNachtCustomizeComponent guteNachtCustomizeComponent) {
         this.telegramService = telegramService;
         this.guteNachtConfigRepo = guteNachtConfigRepo;
         this.timerComponent = timerComponent;
         this.guteNachtInhaltComponent = guteNachtInhaltComponent;
+        this.guteNachtCustomizeComponent = guteNachtCustomizeComponent;
         this.timerComponent.setGuteNachtService(this);
         this.openAIAPIService = openAIAPIService;
     }
@@ -116,6 +123,19 @@ public class GuteNachtService {
             telegramService.sendMessage(message, user);
         } else {
             telegramService.sendMessagesToAdmins(message);
+        }
+    }
+
+    /**
+     * Saves the given GuteNachtCustomize value for the user as author
+     * if the user is not the author of the GuteNachtCustomize, an error message is sent to the user
+     */
+    public void saveCustomize(String name, String value, TelegramUser user) {
+        try {
+            guteNachtCustomizeComponent.saveCustomize(name, value, user);
+            telegramService.sendMessage("Customize %s wurde gespeichert".formatted(name), user);
+        } catch (UserNotAllowedException e) {
+            telegramService.sendMessage(e.getMessage(), user);
         }
     }
 

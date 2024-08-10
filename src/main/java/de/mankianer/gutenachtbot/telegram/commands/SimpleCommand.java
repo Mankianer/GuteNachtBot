@@ -1,13 +1,11 @@
-package de.mankianer.gutenachtbot.telegram;
+package de.mankianer.gutenachtbot.telegram.commands;
 
 import de.mankianer.gutenachtbot.telegram.models.TelegramUser;
 import lombok.Getter;
-import org.telegram.telegrambots.meta.api.objects.Update;
-
-import java.util.function.BiConsumer;
 
 public abstract class SimpleCommand implements CommandInterface {
 
+    @Getter
     private final String command;
     @Getter
     private final boolean isAdminCommand;

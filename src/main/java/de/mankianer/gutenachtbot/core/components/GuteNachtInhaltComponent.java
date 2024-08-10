@@ -1,4 +1,4 @@
-package de.mankianer.gutenachtbot.core;
+package de.mankianer.gutenachtbot.core.components;
 
 import de.mankianer.gutenachtbot.core.models.GuteNachtInhalt;
 import de.mankianer.gutenachtbot.openai.OpenAIAPIService;
