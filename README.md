@@ -17,6 +17,7 @@ _Ein TelegramBot, um eine personalisierte GuteNachtGeschichte zu erhalten._
 - [ ] Es soll Prompt-Profile geben, die User auswählen können. 3 Default Profile
 - [ ] Admin kann Prompt-Profile erstellen
 - [ ] GutenNachtGeschichte wird aus vorgegebenen Inhalt + Prompt des Users generiert
+- [ ] Hilfreiche Willkommensnachricht für neue User
 - [ ] ci pipeline aufsetzen
 - [ ] Funktionalitäten via Tests absichern
 - [ ] _optional: Sprachausgabe für Text_
