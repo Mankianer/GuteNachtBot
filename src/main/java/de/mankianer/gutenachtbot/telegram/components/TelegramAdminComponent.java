@@ -49,11 +49,11 @@ public class TelegramAdminComponent {
         KeyboardRow row = new KeyboardRow();
         row.add("/approve %s".formatted(user.getId()));
         ReplyKeyboardMarkup replyMarkup = new ReplyKeyboardMarkup(List.of(row));
-        sendMessageToAdmins(SendMessage.builder().chatId(adminUsername).text("Neuer User:%n%s".formatted(user))
+        sendMessageToAdmins(SendMessage.builder().chatId("").text("Neuer User:%n%s".formatted(user))
                 .replyMarkup(replyMarkup).build());
     }
 
-    void sendMessageToAdmins(SendMessage message) {
+    public void sendMessageToAdmins(SendMessage message) {
         telegramUserRepo.findByStateAndChatIdNotNull(TelegramUser.State.ADMIN).forEach(user -> {
             message.setChatId(String.valueOf(user.getChatId()));
             telegramService.sendMessage(message);

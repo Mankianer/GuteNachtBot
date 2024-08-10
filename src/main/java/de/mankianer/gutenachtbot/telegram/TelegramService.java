@@ -18,11 +18,13 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 public class TelegramService {
 
     private final TelegramBot telegramBot;
+    private final TelegramAdminComponent telegramAdminComponent;
     private final TelegramCommandComponend telegramCommandComponend;
 
 
     public TelegramService(TelegramBot telegramBot, TelegramUserComponent telegramUserComponent, TelegramAdminComponent telegramAdminComponent, TelegramCommandComponend telegramCommandComponend) {
         this.telegramBot = telegramBot;
+        this.telegramAdminComponent = telegramAdminComponent;
         this.telegramCommandComponend = telegramCommandComponend;
         this.telegramBot.setTelegramService(this);
         telegramUserComponent.setTelegramService(this);
@@ -64,5 +66,14 @@ public class TelegramService {
     public void registerCommand(CommandInterface command) {
         log.info("Registering command: {}", command.getClass().getSimpleName());
         telegramCommandComponend.registerCommand(command);
+    }
+
+    /**
+     * Sends a message to all admins
+     * purpose: inform about errors, approvals, etc.
+     * @param message
+     */
+    public void sendMessagesToAdmins(String message) {
+        telegramAdminComponent.sendMessageToAdmins(SendMessage.builder().chatId("").text(message).build());
     }
 }
