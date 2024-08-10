@@ -1,9 +1,11 @@
 package de.mankianer.gutenachtbot.core;
 
 import de.mankianer.gutenachtbot.core.models.GuteNachtConfig;
+import de.mankianer.gutenachtbot.core.models.GuteNachtInhalt;
 import de.mankianer.gutenachtbot.openai.OpenAIAPIService;
 import de.mankianer.gutenachtbot.telegram.TelegramService;
 import de.mankianer.gutenachtbot.telegram.models.TelegramUser;
+import jakarta.annotation.Nullable;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
 
@@ -20,12 +22,14 @@ public class GuteNachtService {
     private final GuteNachtConfigRepo guteNachtConfigRepo;
     private final TimerComponent timerComponent;
     private final OpenAIAPIService openAIAPIService;
+    private final GuteNachtInhaltComponent guteNachtInhaltComponent;
 
 
-    public GuteNachtService(TelegramService telegramService, GuteNachtConfigRepo guteNachtConfigRepo, TimerComponent timerComponent, OpenAIAPIService openAIAPIService) {
+    public GuteNachtService(TelegramService telegramService, GuteNachtConfigRepo guteNachtConfigRepo, TimerComponent timerComponent, OpenAIAPIService openAIAPIService, GuteNachtInhaltComponent guteNachtInhaltComponent) {
         this.telegramService = telegramService;
         this.guteNachtConfigRepo = guteNachtConfigRepo;
         this.timerComponent = timerComponent;
+        this.guteNachtInhaltComponent = guteNachtInhaltComponent;
         this.timerComponent.setGuteNachtService(this);
         this.openAIAPIService = openAIAPIService;
     }
@@ -98,5 +102,21 @@ public class GuteNachtService {
         });
     }
 
+    /**
+     * Sends the GuteNachtInhalt to the user
+     * if the user is null, the message is sent to all admins
+     * triggers the creation of a new GuteNachtInhalt if there is none for today
+     * @param user
+     */
+    public void getGuteNachtInhalt(@Nullable TelegramUser user) {
+        String message = guteNachtInhaltComponent.getGuteNachtInhaltToDay().map(GuteNachtInhalt::getInhalt).orElseGet(() -> {
+            return "Es konnte keine Inhalt für die GuteNachtGeschichte erzeugt werden.";
+        });
+        if(user != null) {
+            telegramService.sendMessage(message, user);
+        } else {
+            telegramService.sendMessagesToAdmins(message);
+        }
+    }
 
 }

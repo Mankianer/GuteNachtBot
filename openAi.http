@@ -5,6 +5,6 @@ Authorization: Bearer {{openAiToken}}
 
 {
   "model": "gpt-4o-mini",
-  "messages": [{"role": "user", "content": "Say this is a test!"}],
+  "messages": [{"role": "user", "content": "Gib nur Inhalt für eine Gutenachtgeschichte in Stichpunkten"}],
   "temperature": 0.7
 }
