@@ -13,4 +13,6 @@ public interface CommandInterface {
     boolean matchesMessage(String message, TelegramUser user);
 
     void onExecute(Update update, TelegramUser user);
+
+    boolean isAdminCommand();
 }

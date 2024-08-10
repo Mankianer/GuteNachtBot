@@ -40,6 +40,7 @@ public class TelegramService {
     /**
      * Sends a message to the user
      * convert the message and user to a SendMessage object
+     *
      * @param message
      * @param user
      */
@@ -49,6 +50,7 @@ public class TelegramService {
 
     /**
      * Executes the given message via TelegramBot
+     *
      * @param message
      */
     public void sendMessage(SendMessage message) {
@@ -61,16 +63,22 @@ public class TelegramService {
 
     /**
      * Registers a command for all TelegramUsers
+     *
      * @param command
      */
     public void registerCommand(CommandInterface command) {
-        log.info("Registering command: {}", command.getClass().getSimpleName());
-        telegramCommandComponend.registerCommand(command);
+        log.info("Registering command: Admin: {} - {}", command.isAdminCommand(), command.getClass().getSimpleName());
+        if(command.isAdminCommand()) {
+            telegramAdminComponent.registerCommand(command);
+        } else {
+            telegramCommandComponend.registerCommand(command);
+        }
     }
 
     /**
      * Sends a message to all admins
      * purpose: inform about errors, approvals, etc.
+     *
      * @param message
      */
     public void sendMessagesToAdmins(String message) {

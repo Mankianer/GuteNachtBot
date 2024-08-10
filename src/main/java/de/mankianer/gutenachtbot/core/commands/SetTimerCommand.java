@@ -3,6 +3,7 @@ package de.mankianer.gutenachtbot.core.commands;
 import de.mankianer.gutenachtbot.core.GuteNachtConfigRepo;
 import de.mankianer.gutenachtbot.core.GuteNachtService;
 import de.mankianer.gutenachtbot.telegram.CommandInterface;
+import de.mankianer.gutenachtbot.telegram.SimpleCommand;
 import de.mankianer.gutenachtbot.telegram.TelegramService;
 import de.mankianer.gutenachtbot.telegram.models.TelegramUser;
 import jakarta.annotation.PostConstruct;
@@ -13,19 +14,13 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 @Component
-public class SetTimerCommand implements CommandInterface {
+public class SetTimerCommand extends SimpleCommand {
 
     private final GuteNachtService guteNachtService;
-    private final GuteNachtConfigRepo guteNachtConfigRepo;
 
-    public SetTimerCommand(GuteNachtService guteNachtService, GuteNachtConfigRepo guteNachtConfigRepo) {
+    public SetTimerCommand(GuteNachtService guteNachtService) {
+        super("/timer");
         this.guteNachtService = guteNachtService;
-        this.guteNachtConfigRepo = guteNachtConfigRepo;
-    }
-
-    @Override
-    public boolean matchesMessage(String message, TelegramUser user) {
-        return message.toLowerCase().startsWith("/timer");
     }
 
     @Override
@@ -35,7 +30,7 @@ public class SetTimerCommand implements CommandInterface {
         guteNachtService.setGuteNachtTime(user, time);
     }
 
-    public static LocalTime tryConvertToLocalDateTime(String timeString) {
+    private static LocalTime tryConvertToLocalDateTime(String timeString) {
         try {
             // Extrahiere die Zeit aus dem String, z.B. "22:00"
             String time = timeString.split(" ")[1];

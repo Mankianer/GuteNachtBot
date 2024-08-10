@@ -1,6 +1,7 @@
 package de.mankianer.gutenachtbot.telegram.commands.admin;
 
 import de.mankianer.gutenachtbot.telegram.CommandInterface;
+import de.mankianer.gutenachtbot.telegram.SimpleCommand;
 import de.mankianer.gutenachtbot.telegram.TelegramUserRepo;
 import de.mankianer.gutenachtbot.telegram.components.TelegramAdminComponent;
 import de.mankianer.gutenachtbot.telegram.models.TelegramUser;
@@ -9,25 +10,16 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 @Component
-public class AdminAprove implements CommandInterface {
+public class AdminAprove extends SimpleCommand {
 
     public static final String COMMAND_NAME = "/approve";
     private final TelegramAdminComponent telegramAdminComponent;
     private final TelegramUserRepo telegramUserRepo;
 
     public AdminAprove(TelegramAdminComponent telegramAdminComponent, TelegramUserRepo telegramUserRepo) {
+        super(COMMAND_NAME, true);
         this.telegramAdminComponent = telegramAdminComponent;
         this.telegramUserRepo = telegramUserRepo;
-    }
-
-    @PostConstruct
-    public void init() {
-        telegramAdminComponent.registerCommand(this);
-    }
-
-    @Override
-    public boolean matchesMessage(String message, TelegramUser user) {
-        return user.isAdmin() && message.startsWith(COMMAND_NAME + " ");
     }
 
     @Override
