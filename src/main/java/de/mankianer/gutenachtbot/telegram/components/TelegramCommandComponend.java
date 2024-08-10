@@ -1,6 +1,6 @@
 package de.mankianer.gutenachtbot.telegram.components;
 
-import de.mankianer.gutenachtbot.telegram.CommandInterface;
+import de.mankianer.gutenachtbot.telegram.commands.CommandInterface;
 import de.mankianer.gutenachtbot.telegram.models.TelegramUser;
 import org.springframework.stereotype.Component;
 

@@ -1,5 +1,6 @@
 package de.mankianer.gutenachtbot.telegram;
 
+import de.mankianer.gutenachtbot.telegram.commands.CommandInterface;
 import de.mankianer.gutenachtbot.telegram.components.TelegramAdminComponent;
 import de.mankianer.gutenachtbot.telegram.components.TelegramBot;
 import de.mankianer.gutenachtbot.telegram.components.TelegramCommandComponend;
@@ -8,10 +9,8 @@ import de.mankianer.gutenachtbot.telegram.models.TelegramUser;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 @Log4j2
 @Component

@@ -1,6 +1,8 @@
-package de.mankianer.gutenachtbot.core;
+package de.mankianer.gutenachtbot.core.components;
 
+import de.mankianer.gutenachtbot.core.GuteNachtService;
 import de.mankianer.gutenachtbot.core.models.GuteNachtConfig;
+import de.mankianer.gutenachtbot.core.repos.GuteNachtConfigRepo;
 import de.mankianer.gutenachtbot.telegram.models.TelegramUser;
 import jakarta.annotation.PostConstruct;
 import lombok.Setter;

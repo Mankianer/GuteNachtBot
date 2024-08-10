@@ -1,11 +1,9 @@
 package de.mankianer.gutenachtbot.telegram.commands.admin;
 
-import de.mankianer.gutenachtbot.telegram.CommandInterface;
-import de.mankianer.gutenachtbot.telegram.SimpleCommand;
+import de.mankianer.gutenachtbot.telegram.commands.SimpleCommand;
 import de.mankianer.gutenachtbot.telegram.TelegramUserRepo;
 import de.mankianer.gutenachtbot.telegram.components.TelegramAdminComponent;
 import de.mankianer.gutenachtbot.telegram.models.TelegramUser;
-import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 

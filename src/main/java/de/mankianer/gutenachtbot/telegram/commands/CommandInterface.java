@@ -1,4 +1,4 @@
-package de.mankianer.gutenachtbot.telegram;
+package de.mankianer.gutenachtbot.telegram.commands;
 
 import de.mankianer.gutenachtbot.telegram.models.TelegramUser;
 import org.telegram.telegrambots.meta.api.objects.Update;
