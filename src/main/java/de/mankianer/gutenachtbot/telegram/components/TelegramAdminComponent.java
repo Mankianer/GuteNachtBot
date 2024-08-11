@@ -1,8 +1,9 @@
 package de.mankianer.gutenachtbot.telegram.components;
 
-import de.mankianer.gutenachtbot.telegram.commands.CommandInterface;
 import de.mankianer.gutenachtbot.telegram.TelegramService;
 import de.mankianer.gutenachtbot.telegram.TelegramUserRepo;
+import de.mankianer.gutenachtbot.telegram.commands.CommandInterface;
+import de.mankianer.gutenachtbot.telegram.commands.WelcomeCommand;
 import de.mankianer.gutenachtbot.telegram.models.TelegramUser;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
@@ -27,9 +28,11 @@ public class TelegramAdminComponent {
     private String adminUsername;
     @Getter
     private List<CommandInterface> adminCommands;
+    private final WelcomeCommand welcomeCommand;
 
-    public TelegramAdminComponent(TelegramUserRepo telegramUserRepo) {
+    public TelegramAdminComponent(TelegramUserRepo telegramUserRepo, WelcomeCommand welcomeCommand) {
         this.telegramUserRepo = telegramUserRepo;
+        this.welcomeCommand = welcomeCommand;
         adminCommands = new ArrayList<>();
     }
 
@@ -68,5 +71,6 @@ public class TelegramAdminComponent {
         user.setState(TelegramUser.State.VERIFIED);
         telegramUserRepo.save(user);
         sendMessageToAdmins(SendMessage.builder().chatId(user.getChatId()).text("User %s approved.".formatted(user)).build());
+        welcomeCommand.onExecute(null, user);
     }
 }
