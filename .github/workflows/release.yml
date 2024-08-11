@@ -41,14 +41,14 @@ jobs:
           uses: docker/setup-qemu-action@v3
         - name: Set up Docker Buildx
           uses: docker/setup-buildx-action@v3
-        - name: Build and Push Image
-          run: |
-            docker buildx  build . -t ${{env.fullImageNameARM}} --push --platform linux/arm64
-            docker buildx  build . -t ${{env.fullImageNameAMD}} --push --platform linux/amd64
 
         - name: Login to GitHub Container Registry
           run: echo ${{secrets.GITHUB_TOKEN}} | docker login ghcr.io -u mankianer --password-stdin
 
+        - name: Build and Push Image
+          run: |
+            docker buildx  build . -t ${{env.fullImageNameARM}} --push --platform linux/arm64
+            docker buildx  build . -t ${{env.fullImageNameAMD}} --push --platform linux/amd64
         - name: Create Version Manifest
           run: |
             docker manifest create ${{env.fullImageName}} ${{env.fullImageNameARM}} ${{env.fullImageNameAMD}}
