@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.util.List;
+
 @Log4j2
 @Component
 public class TelegramService {
@@ -44,7 +46,8 @@ public class TelegramService {
      * @param user
      */
     public void sendMessage(String message, TelegramUser user) {
-        sendMessage(SendMessage.builder().chatId(String.valueOf(user.getChatId())).text(message).build());
+        SendMessage sendMessage = SendMessage.builder().chatId(String.valueOf(user.getChatId())).text(message).build();
+        sendMessage(sendMessage);
     }
 
     /**
@@ -82,5 +85,15 @@ public class TelegramService {
      */
     public void sendMessagesToAdmins(String message) {
         telegramAdminComponent.sendMessageToAdmins(SendMessage.builder().chatId("").text(message).build());
+    }
+
+    /**
+     * Get all commands for a user
+     *
+     * @param user
+     * @return
+     */
+    public List<CommandInterface> getCommands(TelegramUser user) {
+        return telegramCommandComponend.getCommands(user);
     }
 }

@@ -12,7 +12,7 @@ public class GuteNachtCommand extends SimpleCommand {
     private final GuteNachtService guteNachtService;
 
     public GuteNachtCommand(GuteNachtService guteNachtService) {
-        super("gute nacht");
+        super("gute nacht", "Zum Triggern der GuteNacht Nachricht für den heutigen Tag.");
         this.guteNachtService = guteNachtService;
     }
 

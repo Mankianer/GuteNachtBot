@@ -18,7 +18,7 @@ public class ListGuteNachtCustomizeCommand extends SimpleCommand {
     private final GuteNachtService guteNachtService;
 
     public ListGuteNachtCustomizeCommand(GuteNachtService guteNachtService) {
-        super("/customizes", false);
+        super("/customizes", "Zum Auflisten aller Customizes-Profile");
         this.guteNachtService = guteNachtService;
     }
 
