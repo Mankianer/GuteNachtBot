@@ -45,11 +45,7 @@ jobs:
           run: |
             docker buildx  build . -t ${{env.fullImageNameARM}} --platform linux/arm64
             docker buildx  build . -t ${{env.fullImageNameAMD}} --platform linux/amd64
-            
-    release:
-        needs: build
-        runs-on: ubuntu-latest
-        steps:
+
         - name: Login to GitHub Container Registry
           run: echo ${{secrets.GITHUB_TOKEN}} | docker login ghcr.io -u mankianer --password-stdin
         - name: Create Version Manifest
