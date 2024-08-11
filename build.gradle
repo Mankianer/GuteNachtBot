@@ -39,7 +39,7 @@ dependencies {
 
 
     // https://mvnrepository.com/artifact/org.telegram/telegrambots-spring-boot-starter
-    implementation group: 'org.telegram', name: 'telegrambots-spring-boot-starter', version: '6.7.0'
+    implementation group: 'org.telegram', name: 'telegrambots-spring-boot-starter', version: '6.9.7.1'
 }
 
 tasks.named('test') {
