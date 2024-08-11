@@ -1,12 +1,11 @@
 package de.mankianer.gutenachtbot.core;
 
-import de.mankianer.gutenachtbot.core.components.GuteNachtCustomizeComponent;
-import de.mankianer.gutenachtbot.core.components.GuteNachtInhaltComponent;
-import de.mankianer.gutenachtbot.core.components.TimerComponent;
+import de.mankianer.gutenachtbot.core.components.*;
+import de.mankianer.gutenachtbot.core.components.exceptions.NotFoundException;
 import de.mankianer.gutenachtbot.core.components.exceptions.UserNotAllowedException;
 import de.mankianer.gutenachtbot.core.models.GuteNachtConfig;
+import de.mankianer.gutenachtbot.core.models.GuteNachtCustomize;
 import de.mankianer.gutenachtbot.core.models.GuteNachtInhalt;
-import de.mankianer.gutenachtbot.core.repos.GuteNachtConfigRepo;
 import de.mankianer.gutenachtbot.openai.OpenAIAPIService;
 import de.mankianer.gutenachtbot.telegram.TelegramService;
 import de.mankianer.gutenachtbot.telegram.models.TelegramUser;
@@ -15,7 +14,6 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -24,19 +22,23 @@ import java.time.format.DateTimeFormatter;
 public class GuteNachtService {
 
     private final TelegramService telegramService;
-    private final GuteNachtConfigRepo guteNachtConfigRepo;
     private final TimerComponent timerComponent;
     private final OpenAIAPIService openAIAPIService;
     private final GuteNachtInhaltComponent guteNachtInhaltComponent;
     private final GuteNachtCustomizeComponent guteNachtCustomizeComponent;
+    private final GuteNachtConfigComponent guteNachtConfigComponent;
+    private final GuteNachtGeschichteComponent guteNachtGeschichteComponent;
 
 
-    public GuteNachtService(TelegramService telegramService, GuteNachtConfigRepo guteNachtConfigRepo, TimerComponent timerComponent, OpenAIAPIService openAIAPIService, GuteNachtInhaltComponent guteNachtInhaltComponent, GuteNachtCustomizeComponent guteNachtCustomizeComponent) {
+    public GuteNachtService(TelegramService telegramService, TimerComponent timerComponent, OpenAIAPIService openAIAPIService, GuteNachtInhaltComponent guteNachtInhaltComponent, GuteNachtCustomizeComponent guteNachtCustomizeComponent, GuteNachtConfigComponent guteNachtConfigComponent, GuteNachtGeschichteComponent guteNachtGeschichteComponent) {
         this.telegramService = telegramService;
-        this.guteNachtConfigRepo = guteNachtConfigRepo;
         this.timerComponent = timerComponent;
         this.guteNachtInhaltComponent = guteNachtInhaltComponent;
         this.guteNachtCustomizeComponent = guteNachtCustomizeComponent;
+        this.guteNachtConfigComponent = guteNachtConfigComponent;
+        this.guteNachtGeschichteComponent = guteNachtGeschichteComponent;
+        this.guteNachtGeschichteComponent.setGuteNachtService(this);
+        this.guteNachtCustomizeComponent.setGuteNachtService(this);
         this.timerComponent.setGuteNachtService(this);
         this.openAIAPIService = openAIAPIService;
     }
@@ -54,14 +56,10 @@ public class GuteNachtService {
      * @return the updated GuteNachtConfig for next Date
      */
     public GuteNachtConfig sendGuteNacht(TelegramUser user) {
-        this.openAIAPIService.completeText("Gib mir eine kurze Gutenachtgeschichte").ifPresentOrElse(story -> {
+        guteNachtGeschichteComponent.getGuteNachtGeschichte(user).ifPresentOrElse(story -> {
             telegramService.sendMessage(story, user);
-        }, () -> {
-            telegramService.sendMessage("Es konnte keine GuteNachtGeschichte erzeugt werden. 😢", user);
-        });
-        GuteNachtConfig guteNachtConfig = getGuteNachtConfig(user);
-        guteNachtConfig.setNextDate(LocalDate.now().plusDays(1));
-        return guteNachtConfigRepo.save(guteNachtConfig);
+        }, () -> telegramService.sendMessage("Es konnte keine GuteNachtGeschichte erzeugt werden. 😢", user));
+        return guteNachtConfigComponent.updateGuteNachtConfigToNextDay(user);
     }
 
     /**
@@ -82,12 +80,12 @@ public class GuteNachtService {
     public void setGuteNachtTime(TelegramUser user, LocalTime time) {
         GuteNachtConfig guteNachtConfig = getGuteNachtConfig(user);
         guteNachtConfig.setTimer(time);
-        guteNachtConfigRepo.save(guteNachtConfig);
+        guteNachtConfigComponent.saveGuteNachtConfig(guteNachtConfig);
         Instant nextInstant = timerComponent.scheduleGuteNacht(user);
         if(nextInstant != null) {
-            telegramService.sendMessage("Nächster Gute Nacht Gruß ist am %s".formatted(formatInstant(nextInstant)), guteNachtConfig.getTelegramUser());
+            telegramService.sendMessage("Nächster GuteNachtTimer ist am %s".formatted(formatInstant(nextInstant)), guteNachtConfig.getTelegramUser());
         } else {
-            telegramService.sendMessage("Gute Nacht Gruß ist deaktiviert", guteNachtConfig.getTelegramUser());
+            telegramService.sendMessage("GuteNachtTimer ist deaktiviert", guteNachtConfig.getTelegramUser());
         }
     }
 
@@ -103,10 +101,7 @@ public class GuteNachtService {
      * @return the GuteNachtConfig for the user, if it does not exist, a new one is created and seved
      */
     public GuteNachtConfig getGuteNachtConfig(TelegramUser user) {
-        return guteNachtConfigRepo.findByTelegramUser(user).orElseGet(() -> {
-            GuteNachtConfig guteNachtConfig = new GuteNachtConfig(user);
-            return guteNachtConfigRepo.save(guteNachtConfig);
-        });
+        return guteNachtConfigComponent.getGuteNachtConfig(user);
     }
 
     /**
@@ -115,7 +110,7 @@ public class GuteNachtService {
      * triggers the creation of a new GuteNachtInhalt if there is none for today
      * @param user
      */
-    public void getGuteNachtInhalt(@Nullable TelegramUser user) {
+    public void sendGuteNachtInhaltToUser(@Nullable TelegramUser user) {
         String message = guteNachtInhaltComponent.getGuteNachtInhaltToDay().map(GuteNachtInhalt::getInhalt).orElseGet(() -> {
             return "Es konnte keine Inhalt für die GuteNachtGeschichte erzeugt werden.";
         });
@@ -137,6 +132,76 @@ public class GuteNachtService {
         } catch (UserNotAllowedException e) {
             telegramService.sendMessage(e.getMessage(), user);
         }
+    }
+
+    /**
+     * Removes the given GuteNachtCustomize for the user as author
+     * if the user is not the author of the GuteNachtCustomize, an error message is sent to the user
+     */
+    public void removeCustomize(String name, TelegramUser user) {
+        try {
+            boolean isDeleted = guteNachtCustomizeComponent.removeCustomize(name, user);
+            if(isDeleted) {
+                telegramService.sendMessage("Customize %s wurde gelöscht".formatted(name), user);
+            } else {
+                telegramService.sendMessage("Customize %s konnte nicht gelöscht werden".formatted(name), user);
+            }
+        } catch (UserNotAllowedException e) {
+            telegramService.sendMessage(e.getMessage(), user);
+        }
+    }
+
+    /**
+     * Sends the GuteNachtCustomize Infos to the user
+     */
+    public void sendCustomizeInfos(String customizeName, TelegramUser user) {
+        guteNachtCustomizeComponent.getCustomize(customizeName).ifPresentOrElse(
+                customize -> telegramService.sendMessage("Customize %s - Author:%s%n%s".formatted(customizeName,customize.getAuthor(), customize.getPrompt()), user),
+                () -> telegramService.sendMessage("Customize %s konnte nicht gefunden werden".formatted(customizeName), user));
+    }
+
+    /**
+     * Lists all GuteNachtCustomizes and sends them to the user
+     */
+    public void sendListCustomizesToUser(TelegramUser user) {
+        StringBuilder message = new StringBuilder();
+        message.append("Aktuelles Customize:%s:%n".formatted(getCurrentCustomize(user).getName()));
+        message.append("Verfügbare Customizes:\n");
+        guteNachtCustomizeComponent.getAllCustomizes().forEach(customize -> message.append("/customize_set_%s%n".formatted(customize.getName())));
+        telegramService.sendMessage(message.toString(), user);
+    }
+
+    /**
+     * Returns the current GuteNachtCustomize for the user
+     */
+    public GuteNachtCustomize getCurrentCustomize(TelegramUser user) {
+        return guteNachtCustomizeComponent.getCurrentCustomize(user);
+    }
+
+    /**
+     * Sends Infos of the current GuteNachtCustomize to the user
+     */
+    public void sendCurrentCustomizeToUser(TelegramUser user) {
+        GuteNachtCustomize customize = getCurrentCustomize(user);
+        telegramService.sendMessage("Aktuelles Customize:%s".formatted(customize.getName()), user);
+    }
+
+    public void setCustomizeToUser(String customizeName, TelegramUser user) {
+        try {
+            GuteNachtCustomize guteNachtCustomize = guteNachtCustomizeComponent.setCustomize(customizeName, user);
+            telegramService.sendMessage("Customize %s wurde gesetzt".formatted(guteNachtCustomize.getName()), user);
+        } catch (NotFoundException e) {
+            telegramService.sendMessage("Customize %s konnte nicht gefunden werden".formatted(customizeName), user);
+        }
+    }
+
+    /**
+     * Saves the given GuteNachtCustomize value for the user
+     * @param customize
+     * @param user
+     */
+    public void updateGuteNachtCustomize(GuteNachtCustomize customize, TelegramUser user) {
+        guteNachtConfigComponent.updateGuteNachtCustomize(customize, user);
     }
 
 }
