@@ -48,12 +48,17 @@ jobs:
 
         - name: Login to GitHub Container Registry
           run: echo ${{secrets.GITHUB_TOKEN}} | docker login ghcr.io -u mankianer --password-stdin
-        - name: Create Version Manifest
-          run: docker manifest create ${{env.fullImageName}} ${{env.fullImageNameARM}} ${{env.fullImageNameAMD}}
-        - name: tag Manifest to latest
-          run: docker manifest tag ${{env.fullImageName}} ${{env.repoImageName}}:latest
 
-        - name: Push to GitHub Container Registry
+        - name: Push Images
           run: |
+            docker push ${{env.fullImageNameARM}}
+            docker push ${{env.fullImageNameAMD}}
+
+        - name: Create Version Manifest
+          run: |
+            docker manifest create ${{env.fullImageName}} ${{env.fullImageNameARM}} ${{env.fullImageNameAMD}}
             docker manifest push ${{env.fullImageName}}
+        - name: tag Manifest to latest
+          run: |
+            docker manifest tag ${{env.fullImageName}} ${{env.repoImageName}}:latest
             docker manifest push ${{env.repoImageName}}:latest
