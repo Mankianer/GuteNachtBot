@@ -27,7 +27,7 @@ public abstract class SimpleCommand implements CommandInterface {
 
     @Override
     public boolean matchesMessage(String message, TelegramUser user) {
-        return message.startsWith(command);
+        return message.toLowerCase().startsWith(command.toLowerCase());
     }
 
     @Override

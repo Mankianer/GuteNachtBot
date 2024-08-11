@@ -96,4 +96,18 @@ public class TelegramService {
     public List<CommandInterface> getCommands(TelegramUser user) {
         return telegramCommandComponend.getCommands(user);
     }
+
+    public String getWelcomeMessage(TelegramUser user) {
+        StringBuilder message = new StringBuilder();
+        message.append("Hallo %s, willkommen beim GuteNachtBot.%n".formatted(user.getFirstname()));
+        if(user.isAdmin()) message.append("Du bist Admin!\n");
+        message.append("Hier findest du eine Übersicht der Befehle, die du nutzen kannst:\n");
+        List<CommandInterface> commands = getCommands(user);
+        commands.sort((c1, c2) -> c1.getDescription().compareTo(c2.getDescription()));
+        for (CommandInterface command : commands) {
+            message.append("* %s%s%n".formatted(command.getDescription(), command.isAdminCommand() ? "¹" : ""));
+        }
+        if(user.isAdmin()) message.append("\n¹ - Adminbefehle");
+        return message.toString();
+    }
 }
