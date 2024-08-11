@@ -9,7 +9,6 @@ import de.mankianer.gutenachtbot.core.models.GuteNachtInhalt;
 import de.mankianer.gutenachtbot.openai.OpenAIAPIService;
 import de.mankianer.gutenachtbot.telegram.TelegramService;
 import de.mankianer.gutenachtbot.telegram.models.TelegramUser;
-import jakarta.annotation.Nullable;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +16,7 @@ import java.time.Instant;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 @Service
 public class GuteNachtService {
@@ -106,19 +106,30 @@ public class GuteNachtService {
 
     /**
      * Sends the GuteNachtInhalt to the user
-     * if the user is null, the message is sent to all admins
      * triggers the creation of a new GuteNachtInhalt if there is none for today
      * @param user
      */
-    public void sendGuteNachtInhaltToUser(@Nullable TelegramUser user) {
-        String message = guteNachtInhaltComponent.getGuteNachtInhaltToDay().map(GuteNachtInhalt::getInhalt).orElseGet(() -> {
+    public void sendGuteNachtInhaltToUser(TelegramUser user) {
+        String message = getCurrentGuteNachtInhalt().map(GuteNachtInhalt::getInhalt).orElseGet(() -> {
             return "Es konnte keine Inhalt für die GuteNachtGeschichte erzeugt werden.";
         });
         if(user != null) {
             telegramService.sendMessage(message, user);
-        } else {
-            telegramService.sendMessagesToAdmins(message);
         }
+    }
+
+    /**
+     * Returns the current GuteNachtInhalt
+     * if there is no GuteNachtInhalt for today, a new one is created
+     * if a new GuteNachtInhalt is created, a message is sent to the admins
+     * @return the current GuteNachtInhalt or an empty Optional if OpenAI is not available
+     */
+    public Optional<GuteNachtInhalt> getCurrentGuteNachtInhalt() {
+        return guteNachtInhaltComponent.getGuteNachtInhaltToDay().or(() -> {
+            Optional<GuteNachtInhalt> newGuteNachtInhalt = guteNachtInhaltComponent.createNewGuteNachtInhalt();
+            newGuteNachtInhalt.ifPresent(guteNachtInhalt -> telegramService.sendMessagesToAdmins("Neuer Inhalt für die GuteNachtGeschichte wurde erzeugt!"));
+            return newGuteNachtInhalt;
+        });
     }
 
     /**
