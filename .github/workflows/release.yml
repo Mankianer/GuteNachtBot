@@ -29,7 +29,7 @@ jobs:
             echo "fullImageNameAMD=${{env.repoImageName}}:amd64-${{env.version}}" >> $GITHUB_ENV
 
         - name: build-jar
-          run: docker run --rm -u gradle -v "${PWD}":/home/gradle/project -w /home/gradle/project gradle:8-jdk21-alpine gradle -Prelease.useLastTag=true final
+          run: ./gradlew -Prelease.useLastTag=true final
 
         - name: Set up QEMU
           uses: docker/setup-qemu-action@v3

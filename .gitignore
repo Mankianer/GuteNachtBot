@@ -36,9 +36,5 @@ out/
 ### VS Code ###
 .vscode/
 /src/main/resources/application-private.properties
-/gradlew
-/gradlew.bat
-/gradle/wrapper/gradle-wrapper.jar
-/gradle/wrapper/gradle-wrapper.properties
 /http-client.private.env.json
 /files/
