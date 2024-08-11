@@ -1,0 +1,53 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+env:
+  registry: ghcr.io
+  image: mankianer/gutenachtbot
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+        - uses: actions/checkout@v4
+
+        - name: Extract version from tag
+          run: echo "version=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
+        - name: Set up image names
+          run: |
+            echo "repoImageName=${env.registry}/${env.image}" >> $GITHUB_ENV
+            echo "fullImageName=${env.repoImageName}:${env.version}" >> $GITHUB_ENV
+            echo "fullImageNameARM=${env.repoImageName}:arm64-${env.version}" >> $GITHUB_ENV
+            echo "fullImageNameAMD=${env.repoImageName}:amd64-${env.version}" >> $GITHUB_ENV
+
+        - name: build-jar
+          run: docker run --rm -u gradle -v "$(pwd)":/home/gradle/project -w /home/gradle/project gradle:8-jdk21-alpine gradle -Prelease.useLastTag=true final
+
+        - name: Set up QEMU
+          uses: docker/setup-qemu-action@v3
+        - name: Set up Docker Buildx
+          uses: docker/setup-buildx-action@v3
+        - name: Build Image
+          run: |
+            docker buildx  build . -t ${{env.fullImageNameARM}} --platform linux/arm64
+            docker buildx  build . -t ${{env.fullImageNameAMD}} --platform linux/amd64
+            
+    release:
+        needs: build
+        runs-on: ubuntu-latest
+        steps:
+        - name: Login to GitHub Container Registry
+          run: echo ${{secrets.GITHUB_TOKEN}} | docker login ghcr.io -u mankianer --password-stdin
+        - name: Create Version Manifest
+          run: docker manifest create ${{env.fullImageName}} ${{env.fullImageNameARM}} ${{env.fullImageNameAMD}}
+        - name: tag Manifest to latest
+          run: docker manifest tag ${{env.fullImageName}} ${{env.repoImageName}}:latest
+
+        - name: Push to GitHub Container Registry
+          run: |
+            docker manifest push ${{env.fullImageName}}
+            docker manifest push ${{env.repoImageName}}:latest
