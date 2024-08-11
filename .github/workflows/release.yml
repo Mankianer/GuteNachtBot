@@ -15,14 +15,15 @@ jobs:
         - uses: actions/checkout@v4
 
         - name: Extract version from tag
-          run: echo "version=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+          run: |
+            echo "version=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
         - name: Set up image names
           run: |
-            echo "repoImageName=${env.registry}/${env.image}" >> $GITHUB_ENV
-            echo "fullImageName=${env.repoImageName}:${env.version}" >> $GITHUB_ENV
-            echo "fullImageNameARM=${env.repoImageName}:arm64-${env.version}" >> $GITHUB_ENV
-            echo "fullImageNameAMD=${env.repoImageName}:amd64-${env.version}" >> $GITHUB_ENV
+            echo "repoImageName=${{env.registry}}/${{env.image}}" >> $GITHUB_ENV
+            echo "fullImageName=${{env.repoImageName}}:${{env.version}}" >> $GITHUB_ENV
+            echo "fullImageNameARM=${{env.repoImageName}}:arm64-${{env.version}}" >> $GITHUB_ENV
+            echo "fullImageNameAMD=${{env.repoImageName}}:amd64-${{env.version}}" >> $GITHUB_ENV
 
         - name: build-jar
           run: docker run --rm -u gradle -v "$(pwd)":/home/gradle/project -w /home/gradle/project gradle:8-jdk21-alpine gradle -Prelease.useLastTag=true final
