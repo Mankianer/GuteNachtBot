@@ -4,7 +4,6 @@ import de.mankianer.gutenachtbot.telegram.models.TelegramUser;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import lombok.*;
 
 @Entity
@@ -23,6 +22,5 @@ public class GuteNachtCustomize {
 
     @ManyToOne
     private TelegramUser author;
-
 
 }

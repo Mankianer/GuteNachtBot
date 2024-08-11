@@ -20,6 +20,9 @@ public class GuteNachtConfig {
     @OneToOne
     private TelegramUser telegramUser;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private GuteNachtCustomize customize;
+
     private LocalTime timer;
 
     private LocalDate nextDate;
