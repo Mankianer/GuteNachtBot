@@ -26,7 +26,7 @@ public class RemoveGuteNachtCustomizeCommand extends SimpleCommand {
     private final Pattern pattern;
 
     public RemoveGuteNachtCustomizeCommand(GuteNachtService guteNachtService, TelegramService telegramService) {
-        super("/customize_remove", true);
+        super("/customize_remove","Zum Löschen von Customize-Profilen. (/customize_remove <CUSTOMIZE_NAME>)",  true);
         this.guteNachtService = guteNachtService;
         this.telegramService = telegramService;
         pattern = Pattern.compile(COMMAND_REGEX);

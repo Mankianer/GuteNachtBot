@@ -1,12 +1,15 @@
 package de.mankianer.gutenachtbot.telegram.commands;
 
 import de.mankianer.gutenachtbot.telegram.models.TelegramUser;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+@AllArgsConstructor
 public abstract class SimpleCommand implements CommandInterface {
 
     @Getter
     private final String command;
+    private String description = "N/A";
     @Getter
     private final boolean isAdminCommand;
 
@@ -14,13 +17,21 @@ public abstract class SimpleCommand implements CommandInterface {
         this(command, false);
     }
 
+    public SimpleCommand(String command, String description) {
+        this(command, description, false);
+    }
+
     public SimpleCommand(String command, boolean isAdminCommand) {
-        this.command = command;
-        this.isAdminCommand = isAdminCommand;
+        this(command, "N/A", isAdminCommand);
     }
 
     @Override
     public boolean matchesMessage(String message, TelegramUser user) {
         return message.startsWith(command);
+    }
+
+    @Override
+    public String getDescription() {
+        return command + " - " + description;
     }
 }

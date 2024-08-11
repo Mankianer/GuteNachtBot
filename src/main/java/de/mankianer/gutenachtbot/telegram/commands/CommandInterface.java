@@ -15,4 +15,6 @@ public interface CommandInterface {
     void onExecute(Update update, TelegramUser user);
 
     boolean isAdminCommand();
+
+    String getDescription();
 }

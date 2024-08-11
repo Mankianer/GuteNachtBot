@@ -40,4 +40,12 @@ public class TelegramCommandComponend {
         }
         return commands.stream().filter(command -> command.matchesMessage(message, user)).findFirst();
     }
+
+    public List<CommandInterface> getCommands(TelegramUser user) {
+        List<CommandInterface> commands = new ArrayList<>(this.commands);
+        if(user.isAdmin()) {
+            commands.addAll(this.telegramAdminComponent.getAdminCommands());
+        }
+        return commands;
+    }
 }

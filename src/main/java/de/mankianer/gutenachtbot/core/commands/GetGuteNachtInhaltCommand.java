@@ -12,7 +12,7 @@ public class GetGuteNachtInhaltCommand extends SimpleCommand {
     private final GuteNachtService guteNachtService;
 
     public GetGuteNachtInhaltCommand(GuteNachtService guteNachtService) {
-        super("/inhalt");
+        super("/inhalt", "Zum Abfragen des aktuellen Inhalts für die heute GutNachtGeschichte");
         this.guteNachtService = guteNachtService;
     }
 

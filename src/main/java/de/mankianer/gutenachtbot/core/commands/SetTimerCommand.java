@@ -15,7 +15,7 @@ public class SetTimerCommand extends SimpleCommand {
     private final GuteNachtService guteNachtService;
 
     public SetTimerCommand(GuteNachtService guteNachtService) {
-        super("/timer");
+        super("/timer", "Zum Setzen des GuteNachtGeschichten Timers.(/timer [<HH:mm>])\nBeispiel: /timer 22:00\nBeispiel: /timer off");
         this.guteNachtService = guteNachtService;
     }
 

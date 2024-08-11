@@ -18,7 +18,7 @@ public class GetCurrentGuteNachtCustomizeCommand extends SimpleCommand {
     private final GuteNachtService guteNachtService;
 
     public GetCurrentGuteNachtCustomizeCommand(GuteNachtService guteNachtService) {
-        super("/customize", false);
+        super("/customize", "Zum Abfragen des aktuellen Customize",false);
         this.guteNachtService = guteNachtService;
     }
 

@@ -26,7 +26,7 @@ public class SetGuteNachtCustomizeToUserCommand extends SimpleCommand {
     private final Pattern pattern;
 
     public SetGuteNachtCustomizeToUserCommand(GuteNachtService guteNachtService, TelegramService telegramService) {
-        super("/customize_set");
+        super("/customize_set", "Zum Auswählen des aktuellen Customize-Profil. (/customize_set <CUSTOMIZE_NAME>)");
         this.guteNachtService = guteNachtService;
         this.telegramService = telegramService;
         pattern = Pattern.compile(COMMAND_REGEX);

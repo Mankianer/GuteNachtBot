@@ -1,7 +1,7 @@
 package de.mankianer.gutenachtbot.telegram.commands.admin;
 
-import de.mankianer.gutenachtbot.telegram.commands.SimpleCommand;
 import de.mankianer.gutenachtbot.telegram.TelegramUserRepo;
+import de.mankianer.gutenachtbot.telegram.commands.SimpleCommand;
 import de.mankianer.gutenachtbot.telegram.components.TelegramAdminComponent;
 import de.mankianer.gutenachtbot.telegram.models.TelegramUser;
 import org.springframework.stereotype.Component;
@@ -15,7 +15,7 @@ public class AdminAprove extends SimpleCommand {
     private final TelegramUserRepo telegramUserRepo;
 
     public AdminAprove(TelegramAdminComponent telegramAdminComponent, TelegramUserRepo telegramUserRepo) {
-        super(COMMAND_NAME, true);
+        super(COMMAND_NAME, "Zum Bestätigen von neuen User, damit diese den Bot nutzten können. (/approve <USER_ID>)", true);
         this.telegramAdminComponent = telegramAdminComponent;
         this.telegramUserRepo = telegramUserRepo;
     }
