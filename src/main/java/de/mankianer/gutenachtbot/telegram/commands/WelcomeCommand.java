@@ -22,6 +22,6 @@ public class WelcomeCommand extends SimpleCommand {
 
     @Override
     public void onExecute(Update update, TelegramUser user) {
-        telegramService.sendMessage(telegramService.getWelcomeMessage(user), user);
+        telegramService.sendWelcomeMessage(user);
     }
 }

@@ -53,7 +53,8 @@ public class TelegramBot extends TelegramLongPollingBot {
             telegramUserComponent.handleNewUser(user);
         } else {
             telegramCommandComponend.getCommand(update.getMessage().getText(), user)
-                    .ifPresent(command -> command.onExecute(update, user));
+                    .ifPresentOrElse(command -> command.onExecute(update, user),
+                            () -> telegramService.sendMessage("Command not found", user));
         }
 
     }

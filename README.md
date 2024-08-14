@@ -18,7 +18,7 @@ _Ein TelegramBot, um eine personalisierte GuteNachtGeschichte zu erhalten._
 - [x] Admin kann Customize-Profile erstellen
 - [x] GutenNachtGeschichte wird aus vorgegebenen Inhalt + Prompt des Users generiert
 - [x] Hilfreiche Willkommensnachricht für neue User
-- [ ] ci pipeline aufsetzen
+- [x] ci pipeline aufsetzen
 - [ ] Funktionalitäten via Tests absichern
 - [ ] _optional: Sprachausgabe für Text_
  

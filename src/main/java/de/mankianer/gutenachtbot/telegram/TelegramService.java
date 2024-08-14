@@ -97,7 +97,7 @@ public class TelegramService {
         return telegramCommandComponend.getCommands(user);
     }
 
-    public String getWelcomeMessage(TelegramUser user) {
+    public void sendWelcomeMessage(TelegramUser user) {
         StringBuilder message = new StringBuilder();
         message.append("Hallo %s, willkommen beim GuteNachtBot.%n".formatted(user.getFirstname()));
         if(user.isAdmin()) message.append("Du bist Admin!\n");
@@ -108,6 +108,6 @@ public class TelegramService {
             message.append("* %s%s%n".formatted(command.getDescription(), command.isAdminCommand() ? "¹" : ""));
         }
         if(user.isAdmin()) message.append("\n¹ - Adminbefehle");
-        return message.toString();
+        sendMessage(message.toString(), user);
     }
 }

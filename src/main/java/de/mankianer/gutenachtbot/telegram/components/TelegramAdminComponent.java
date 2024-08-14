@@ -68,6 +68,6 @@ public class TelegramAdminComponent {
         user.setState(TelegramUser.State.VERIFIED);
         telegramUserRepo.save(user);
         sendMessageToAdmins(SendMessage.builder().chatId(user.getChatId()).text("User %s approved.".formatted(user)).build());
-        telegramService.sendMessage(telegramService.getWelcomeMessage(user), user);
+        telegramService.sendWelcomeMessage(user);
     }
 }

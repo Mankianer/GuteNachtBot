@@ -47,7 +47,11 @@ public class TelegramUserComponent {
         if (telegramUser.getChatId() == null) {
             log.info("new chatId for user: {}", telegramUser);
             telegramUser.setChatId(chatId);
-            telegramUserRepo.save(telegramUser);
+            telegramUser = telegramUserRepo.save(telegramUser);
+            // default admin user is connected to the bot first time
+            if(telegramUser.isAdmin()) {
+                telegramService.sendWelcomeMessage(telegramUser);
+            }
         }
 
         return telegramUser;
